@@ -59,10 +59,11 @@ void setOptionValue(std::string &Arg, std::string option, po::variables_map cli_
 }
 void setOptionValue(bool &Arg, std::string option, po::variables_map cli_map, po::variables_map cfg_map) {
   Arg=false;
-  if (cfg_map.count(option)) { //if option used in config file
+  
+  if (cfg_map[option].as<bool>()) { //if option used in config file
     Arg=true;
   }
-  if (cli_map.count(option)) { //if option used on command line
+  if (cli_map[option].as<bool>()) { //if option used on command line
     Arg=true;
   }
   return;
