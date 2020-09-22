@@ -65,9 +65,9 @@ int main(int argc, char** argv) {
     ("help,h",    "Help screen")
     ("RUN_DIR",             po::value<std::string>()->implicit_value(""), "run path")
     ("PID_FILE",             po::value<std::string>()->implicit_value(""), "pid path")
-    ("POLLTIME_IN_SECONDS", po::value<int>()->implicit_value(0),          "polling interval")
+    ("POLLTIME_IN_SECONDS", po::value<int>()->implicit_value(-1),          "polling interval")
     ("OUTFILE",             po::value<std::string>()->implicit_value(""), "html output file")
-    ("LOG_LEVEL",           po::value<int>()->implicit_value(0),          "status display log level")
+    ("LOG_LEVEL",           po::value<int>()->implicit_value(-1),          "status display log level")
     ("OUTPUT_TYPE",         po::value<std::string>()->implicit_value(""), "html output type");
 
   //Config File options

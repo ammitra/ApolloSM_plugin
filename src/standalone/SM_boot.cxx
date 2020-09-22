@@ -258,9 +258,9 @@ int main(int argc, char** argv) {
     ("help,h", "Help screen")
     ("run_path,r",           po::value<std::string>()->implicit_value(""), "Path to run directory")
     ("pid_file,f",           po::value<std::string>()->implicit_value(""), "pid file")
-    ("polltime,P",           po::value<int>()->implicit_value(0),          "Polltime in seconds")
+    ("polltime,P",           po::value<int>()->implicit_value(-1),          "Polltime in seconds")
     ("cm_powerup,P",         po::value<bool>()->implicit_value(true),      "Powerup CM")
-    ("cm_powerup_time,t",    po::value<int>()->implicit_value(0),          "Powerup time in seconds")
+    ("cm_powerup_time,t",    po::value<int>()->implicit_value(-1),          "Powerup time in seconds")
     ("sensorsThroughZynq,s", po::value<bool>()->implicit_value(true),      "Read sensors through the Zynq"); // This means: by default, read the sensors through the zynq
    
   po::options_description cfg_options("SM_boot options");

@@ -68,7 +68,7 @@ int main(int argc, char ** argv) {
   po::options_description cli_options("cmpwrdown options");
   cli_options.add_options()
     ("help,h",    "Help screen")
-    ("POLLTIME_IN_SECONDS,s", po::value<int>()->implicit_value(0),          "polltime in seconds")
+    ("POLLTIME_IN_SECONDS,s", po::value<int>()->implicit_value(-1),          "polltime in seconds")
     ("RUN_DIR,r",             po::value<std::string>()->implicit_value(""), "run path")
     ("PID_FILE,d",            po::value<std::string>()->implicit_value(""), "pid file");
 

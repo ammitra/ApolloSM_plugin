@@ -236,7 +236,7 @@ int main(int argc, char **argv) {
     ("RUN_DIR,r",   po::value<std::string>()->implicit_value(""), "Path to default run directory")
     ("PID_FILE,d",  po::value<std::string>()->implicit_value(""), "Path to default pid directory")
     ("xvcPrefix,v", po::value<std::string>()->implicit_value(""), "xvc prefix")
-    ("xvcPort,p",   po::value<int>()->implicit_value(0),          "xvc_port number");
+    ("xvcPort,p",   po::value<int>()->implicit_value(-1),          "xvc_port number");
 
   //Config File options
   po::options_description cfg_options("cmpwrdown options");

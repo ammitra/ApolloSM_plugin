@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
   cli_options.add_options()
     ("help,h",    "Help screen")
     ("CONN_FILE,C",     po::value<std::string>()->implicit_value(""), "Path to the default connection file")
-    ("CM_ID,c",         po::value<int>()->implicit_value(0),          "Default CM to power down")
+    ("CM_ID,c",         po::value<int>()->implicit_value(-1),          "Default CM to power down")
     ("CM_POWER_UP,p",   po::value<bool>()->implicit_value(true),      "Default power up variable");  //note DEFAULT_CM_POWER_UP option does nothing currenty
  
   //Config File options
