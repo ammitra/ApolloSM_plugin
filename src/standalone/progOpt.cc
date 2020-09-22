@@ -29,30 +29,20 @@ po::variables_map storeCfgArguments(po::options_description cfg_options, std::st
   }
   return cfg_map;
 }
-
-//Overloaded Function for returning an argument from an option 
-void setOptionValue(int &Arg, std::string option, po::variables_map cli_map, po::variables_map cfg_map) {
-  if (cli_map.count(option)) { //if option used on command line
-    int cliArg = cli_map[option].as<int>();
-    if (cliArg == 0) { //cli argument is empty
-      if (cfg_map.count(option)) { //if option used in config file
-	Arg = cfg_map[option].as<int>(); //assign argument from config file
-      }
-    } else {
-      Arg = cliArg;
-    }
-  }
-  return;
-}
 void setOptionValue(std::string &Arg, std::string option, po::variables_map cli_map, po::variables_map cfg_map) {
   if (cli_map.count(option)) { //if option used on command line
     std::string cliArg = cli_map[option].as<std::string>();
     if (cliArg == "") { //cli argument is empty
       if (cfg_map.count(option)) { //if option used in config file
+	std::cout << "cfgline" << std::endl;
 	Arg = cfg_map[option].as<std::string>(); //assign argument from config file
       }
     } else {
       Arg = cliArg;
+    }
+  } else { //option not on command line, but is in config
+    if (cfg_map.count(option)) {
+      Arg = cfg_map[option].as<std::string>();
     }
   }
   return;
@@ -60,12 +50,28 @@ void setOptionValue(std::string &Arg, std::string option, po::variables_map cli_
 void setOptionValue(bool &Arg, std::string option, po::variables_map cli_map, po::variables_map cfg_map) {
   if (cli_map.count(option)) { //if option used on command line
     bool cliArg = cli_map[option].as<bool>();
-    if (cliArg == true) { //cli argument is empty
+      Arg = cliArg;
+  } else { //option not on command line, but is in config
+    if (cfg_map.count(option)) {
+      Arg = cfg_map[option].as<bool>();
+    }
+  }
+  return;
+}
+//Overloaded Function for returning an argument from an option 
+void setOptionValue(int &Arg, std::string option, po::variables_map cli_map, po::variables_map cfg_map) {
+  if (cli_map.count(option)) { //if option used on command line
+    int cliArg = cli_map[option].as<int>();
+    if (cliArg == -1) { //cli argument is empty
       if (cfg_map.count(option)) { //if option used in config file
-	Arg = cfg_map[option].as<bool>(); //assign argument from config file
+	Arg = cfg_map[option].as<int>(); //assign argument from config file
       }
     } else {
       Arg = cliArg;
+    }
+  } else { //option not on command line, but is in config
+    if (cfg_map.count(option)) {
+      Arg = cfg_map[option].as<int>();
     }
   }
   return;
