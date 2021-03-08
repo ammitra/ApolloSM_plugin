@@ -224,6 +224,40 @@ int main(int argc, char** argv) {
   powerupCMuC=         GetFinalParameterValue(std::string("cm_powerup"),        allOptions,DEFAULT_CM_POWERUP);
   powerupTime=         GetFinalParameterValue(std::string("cm_powerup_time"),   allOptions,DEFAULT_POWERUP_TIME);
   sensorsThroughZynq=  GetFinalParameterValue(std::string("sensorsThroughZynq"),allOptions,DEFAULT_SENSORS_THROUGH_ZYNQ);
+
+  //============================================================================
+  // Now parse config file only for reg_write options (adapted from Mike's code)
+  std::map<std::string, std::vector<std::string> > regWriteOptions;
+  po::options_description rw_options("reg_write Options");
+  try {
+    // get parsed reg_write options from config file
+    std::ifstream configFile(DEFAULT_CONFIG_FILE);
+    po::parsed_options cfg_parsed = po::parse_config_file(configFile, rw_options, true);
+    for (size_t iCfg = 0; iCfg < cfg_parsed.options.size(); iCfg++) {
+      if (cfg_parsed.options[iCfg].string_key == "reg_write") {
+        std::string name = cfg_parsed.options[iCfg].string_key;
+        std::string value = "";
+        if (cfg_parsed.options[iCfg].value.size()) {
+          for (size_t i = 0; i < cfg_parsed.options.value.size(); i++) {
+            value += cfg_parsed.options[iCfg].value[i];
+          }
+        }
+        // add {"reg_write", "address value"} key/value pair to regWriteOptions map
+        regWriteOptions[name].push_back(value);
+      }
+    }
+  } catch (std::exception &e) {
+    fprintf(stderr, "ERROR storing config file arguments: %s\n", e.what());
+  }
+
+  // create a new map of reg_write arguments: {address, value}
+  std::map<std::string, uint32_t> addrValMap;
+  std::vector<std::string> regWrites = regWriteOptions["reg_write"];
+  for (auto RW = regWrites.begin(); RW != regWrites.end(); RW++) {
+    std::string addr = (*RW).substr(0, (*RW).find(" "));
+    uint32_t val = std::stoul((*RW).substr((*RW).find(" "), (*RW).size() -1), nullptr, 16);
+    addrValMap.insert({addr, val});
+  }
   
   // ============================================================================
   // Deamon book-keeping
@@ -265,7 +299,26 @@ int main(int argc, char** argv) {
     //Set the power-up done bit to 1 for the IPMC to read
     SM->RegWriteRegister("SLAVE_I2C.S1.SM.STATUS.DONE",1);    
     syslog(LOG_INFO,"Set STATUS.DONE to 1\n");
-  
+
+		// ====================================
+		// perform reg_writes as specified by config file
+    if (addrValMap.size() == 0) {
+      /* do nothing */
+    }
+    else {
+      std::map<std::string, uint32_t>::iterator it = addrValMap.begin();
+      while (it != addrValMap.end()) {
+        std::string address = it->first;
+        uint32_t value = it->second;
+        // perform reg_writes
+        try {
+          SM->RegWriteRegister(address, value);
+          syslog(LOG_INFO, "Wrote 0x%08jx to %s\n", (uintmax_t)value, address.c_str());
+        } catch (BUException::exBase const & e) {
+          syslog(LOG_INFO, "Caught BUException: %s\n   Info: %s\n", e.what(), e.Description());
+        }
+      }
+    }
 
     // ====================================
     // Turn on CM uC      
