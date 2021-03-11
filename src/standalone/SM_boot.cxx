@@ -307,7 +307,7 @@ int main(int argc, char** argv) {
     }
     else {
       std::map<std::string, uint32_t>::iterator it;
-      for (it = addrValMap.begin(), it != addrValMap.end(); it++) {
+      for (it = addrValMap.begin(); it != addrValMap.end(); it++) {
         std::string address = it->first;
         uint32_t value = it->second;
         // perform reg_writes
