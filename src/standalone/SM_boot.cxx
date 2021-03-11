@@ -238,7 +238,7 @@ int main(int argc, char** argv) {
         std::string name = cfg_parsed.options[iCfg].string_key;
         std::string value = "";
         if (cfg_parsed.options[iCfg].value.size()) {
-          for (size_t i = 0; i < cfg_parsed.options.value.size(); i++) {
+          for (size_t i = 0; i < cfg_parsed.options[iCfg].value.size(); i++) {
             value += cfg_parsed.options[iCfg].value[i];
           }
         }
@@ -306,14 +306,15 @@ int main(int argc, char** argv) {
       /* do nothing */
     }
     else {
-      std::map<std::string, uint32_t>::iterator it = addrValMap.begin();
-      while (it != addrValMap.end()) {
+      std::map<std::string, uint32_t>::iterator it;
+      for (it = addrValMap.begin(), it != addrValMap.end(); it++) {
         std::string address = it->first;
         uint32_t value = it->second;
         // perform reg_writes
         try {
           SM->RegWriteRegister(address, value);
           syslog(LOG_INFO, "Wrote 0x%08jx to %s\n", (uintmax_t)value, address.c_str());
+          it++;
         } catch (BUException::exBase const & e) {
           syslog(LOG_INFO, "Caught BUException: %s\n   Info: %s\n", e.what(), e.Description());
         }
