@@ -315,7 +315,6 @@ int main(int argc, char** argv) {
         try {
           SM->RegWriteRegister(address, value);
           syslog(LOG_INFO, "Wrote 0x%.8X to %s\n", value, address.c_str());
-          it++;
         } catch (BUException::exBase const & e) {
           syslog(LOG_INFO, "Caught BUException: %s\n   Info: %s\n", e.what(), e.Description());
         }

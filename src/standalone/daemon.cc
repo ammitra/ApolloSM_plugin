@@ -28,10 +28,12 @@ void Daemon::daemonizeThisProgram(std::string pidFileName, std::string runPath) 
     //We are the parent and created a child with pid pid
     FILE * pidFile = fopen(pidFileName.c_str(),"w");
     if (pidFile == NULL) {
+      printf("Error opening pidfile");
       exit(EXIT_FAILURE);
     }
     fprintf(pidFile,"%d\n",pid);
     if (fprintf(pidFile,"%d\n",pid) < 0) {
+      printf("Error writing to pidfile");
       exit(EXIT_FAILURE);
     }
     fclose(pidFile);
