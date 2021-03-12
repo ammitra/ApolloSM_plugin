@@ -8,6 +8,7 @@
 #include <unistd.h> // usleep, execl
 #include <signal.h>
 #include <time.h>
+#include <stdlib.h> // strtoul
 
 #include <syslog.h>  ///for syslog
 
@@ -255,7 +256,7 @@ int main(int argc, char** argv) {
   std::vector<std::string> regWrites = regWriteOptions["reg_write"];
   for (auto RW = regWrites.begin(); RW != regWrites.end(); RW++) {
     std::string addr = (*RW).substr(0, (*RW).find(" "));
-    uint32_t val = std::stoul((*RW).substr((*RW).find(" "), (*RW).size() -1), nullptr, 16);
+    uint32_t val = strtoul((*RW).substr((*RW).find(" "), (*RW).size() -1).c_str(), NULL, 0);
     addrValMap.insert({addr, val});
   }
   
@@ -313,7 +314,7 @@ int main(int argc, char** argv) {
         // perform reg_writes
         try {
           SM->RegWriteRegister(address, value);
-          syslog(LOG_INFO, "Wrote 0x%08jx to %s\n", (uintmax_t)value, address.c_str());
+          syslog(LOG_INFO, "Wrote 0x%.8X to %s\n", value, address.c_str());
           it++;
         } catch (BUException::exBase const & e) {
           syslog(LOG_INFO, "Caught BUException: %s\n   Info: %s\n", e.what(), e.Description());
